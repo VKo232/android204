@@ -10,14 +10,15 @@ package com.afweb.model;
  * @author eddy
  */
 public class ConstantKey {
+
     public static final String VERSION = "ver-1.0";
     public static final int STOCK_LOCKTYPE = 0;
     public static final int STOCK_UPDATE_LOCKTYPE = 5;
     public static final int ACC_LOCKTYPE = 10;
     public static final int TR_LOCKTYPE = 20;
     public static final int SRV_LOCKTYPE = 30;
-    public static final int SIGNAL_LOCKTYPE = 40;   
-    
+    public static final int SIGNAL_LOCKTYPE = 40;
+
     public static final String MSG_OPEN = "ENABLE";
     public static final int OPEN = 0;
 
@@ -43,6 +44,7 @@ public class ConstantKey {
     public static final String MSG_INITIAL = "INITIAL";
     public static final int INITIAL = 2;
 
-    public static final String IIS_WEB_BASE_URL = "http://web-project003.a3c1.starter-us-west-1.openshiftapps.com/web";
-
+//// Android configuration    
+//// project001    
+    public static final String IIS_WEB_BASE_URL = "http://web-project001.7e14.starter-us-west-2.openshiftapps.com/web";
 }

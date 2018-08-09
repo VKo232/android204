@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AccountStockActivity extends AppCompatActivity  implements OnDialogDoneListener{
-    private static final String TAG = "AccountStockActivity";
+    private static final String TAG = "AccountStockA";
     private  CustomerObj customerObj;
     private  String customerObjSt;
     private  AccountObj accountObj;
@@ -120,6 +120,27 @@ public class AccountStockActivity extends AppCompatActivity  implements OnDialog
                 Toast.makeText(getApplicationContext(),
                         ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
 
+                if (position < accountStockList.size()+1) {
+
+                    try {
+
+                        AFstockObj stockObj = accountStockList.get(position-1);
+                        Intent myIntent = new Intent(getApplicationContext(), TrandingRuleActivityHandler.class);
+
+                        myIntent.putExtra("customerObjSt", customerObjSt); //Optional parameters
+                        myIntent.putExtra("accountObjSt", accountObjSt);
+
+                        String stockObjSt = new ObjectMapper().writeValueAsString(stockObj);
+                        myIntent.putExtra("stockObjSt", stockObjSt); //Optional parameters
+
+                        startActivity(myIntent);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
             }
 
         });
@@ -178,10 +199,11 @@ public class AccountStockActivity extends AppCompatActivity  implements OnDialog
                         data set should refresh itself.
                  */
                 arrayAdapter.notifyDataSetChanged();
-                Intent myIntent = new Intent(getApplicationContext(), AccountStockActivityHandler.class);
+                Intent myIntent = new Intent(getApplicationContext(), TrandingRuleActivityHandler.class);
 
                 myIntent.putExtra("customerObjSt", customerObjSt); //Optional parameters
                 myIntent.putExtra("accountObjSt", accountObjSt); //Optional parameters
+
                 startActivity(myIntent);
             }
         });

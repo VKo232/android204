@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CustomerActivity extends AppCompatActivity {
+    private static final String TAG = "CustomerA";
     private  CustomerObj customerObj;
     private  String customerObjSt;
     private  ArrayList <AccountObj> accountObjList;

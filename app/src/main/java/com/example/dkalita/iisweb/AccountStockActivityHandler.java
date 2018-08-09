@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 
 import com.afweb.model.account.AccountObj;
@@ -21,7 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class AccountStockActivityHandler extends AppCompatActivity implements SignInModel.Observer {
-    private static final String TAG = "SignInActivity";
+    private static final String TAG = "AccountStockAH";
     private static final String TAG_WORKER = "TAG_WORKER_ACC_ST";
     private  CustomerObj customerObj;
     private  String customerObjSt;
@@ -152,9 +151,9 @@ public class AccountStockActivityHandler extends AppCompatActivity implements Si
                 String accountStockListSt = new ObjectMapper().writeValueAsString(accountStockList);
                 myIntent.putExtra("accountStockListSt", accountStockListSt); //Optional parameters
 
-                if (mIISWebfunction == SignInModel.IISWEB_GET_ACCOUNTADDSTOCKLIST) {
+                if (mIISWebfunction == SignInModel.IISWEB_GET_ACCOUNTADDSTOCK) {
                     myIntent.putExtra("Toastmsg", "Stock Added Successfully"); //Optional parameters
-                } else  if (mIISWebfunction == SignInModel.IISWEB_GET_ACCOUNTREMOVESTOCKLIST) {
+                } else  if (mIISWebfunction == SignInModel.IISWEB_GET_ACCOUNTREMOVESTOCK) {
                     myIntent.putExtra("Toastmsg", "Stock Removed Successfully"); //Optional parameters
                 } else {
                     myIntent.putExtra("Toastmsg", ""); //Optional parameters
@@ -192,14 +191,14 @@ public class AccountStockActivityHandler extends AppCompatActivity implements Si
                 int ResultAddRemoveStock = signInModel.getResultAddRemoveStock();
 
                 switch (mIISWebfunction) {
-                    case SignInModel.IISWEB_GET_ACCOUNTADDSTOCKLIST:
+                    case SignInModel.IISWEB_GET_ACCOUNTADDSTOCK:
                         if (ResultAddRemoveStock == AccountObj.MAX_ALLOW_STOCK_ERROR) {
                             myIntent.putExtra("Toastmsg", "Stock Added Failed - Exceeding 20 stock"); //Optional parameters
                         } else {
                             myIntent.putExtra("Toastmsg", "Stock Added Failed"); //Optional parameters
                         }
                         break;
-                    case SignInModel.IISWEB_GET_ACCOUNTREMOVESTOCKLIST:
+                    case SignInModel.IISWEB_GET_ACCOUNTREMOVESTOCK:
                         myIntent.putExtra("Toastmsg", "Stock Removed Failed"); //Optional parameters
                         break;
 

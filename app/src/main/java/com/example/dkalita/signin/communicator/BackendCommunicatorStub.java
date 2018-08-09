@@ -6,8 +6,10 @@ import android.widget.TextView;
 
 
 import com.afweb.model.ConstantKey;
+import com.afweb.model.SymbolNameObj;
 import com.afweb.model.account.AccountObj;
 import com.afweb.model.account.CustomerObj;
+import com.afweb.model.account.TradingRuleObj;
 import com.afweb.model.stock.AFstockObj;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -51,7 +53,7 @@ class BackendCommunicatorStub implements BackendCommunicator {
                 try {
                     ObjectMapper objectMapper = new ObjectMapper();
                     custObj = objectMapper.readValue(resultString, CustomerObj.class);
-
+                    return custObj;
                 } catch (JsonParseException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -65,7 +67,7 @@ class BackendCommunicatorStub implements BackendCommunicator {
             }
         }
 
-        return custObj;
+        return null;
     }
 
 
@@ -83,7 +85,7 @@ class BackendCommunicatorStub implements BackendCommunicator {
                     AccountObj[] arrayItem = new ObjectMapper().readValue(resultString, AccountObj[].class);
                     List<AccountObj> listItem = Arrays.<AccountObj>asList(arrayItem);
                     accountObjArray = new ArrayList<AccountObj>(listItem);
-
+                    return accountObjArray;
                 } catch (JsonParseException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -97,7 +99,7 @@ class BackendCommunicatorStub implements BackendCommunicator {
             }
         }
 
-        return accountObjArray;
+        return null;
     }
 
     @Override
@@ -118,7 +120,7 @@ class BackendCommunicatorStub implements BackendCommunicator {
                 try {
                     ObjectMapper objectMapper = new ObjectMapper();
                     accObj = objectMapper.readValue(resultString, AccountObj.class);
-
+                    return accObj;
                 } catch (JsonParseException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -132,7 +134,7 @@ class BackendCommunicatorStub implements BackendCommunicator {
             }
         }
 
-        return accObj;
+        return null;
     }
 
 
@@ -150,7 +152,7 @@ class BackendCommunicatorStub implements BackendCommunicator {
                     AFstockObj[] arrayItem = new ObjectMapper().readValue(resultString, AFstockObj[].class);
                     List<AFstockObj> listItem = Arrays.<AFstockObj>asList(arrayItem);
                     accountStockObjArray = new ArrayList<AFstockObj>(listItem);
-
+                    return accountStockObjArray;
                 } catch (JsonParseException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -164,7 +166,7 @@ class BackendCommunicatorStub implements BackendCommunicator {
             }
         }
 
-        return accountStockObjArray;
+        return null;
     }
 
 
@@ -226,7 +228,76 @@ class BackendCommunicatorStub implements BackendCommunicator {
         return 0;
     }
 
-        //////////////////////////
+
+    @Override
+    public ArrayList getTradingRuleList(String gUserName, String gAccountId, String gSymbol)throws Exception {
+        ArrayList TradingRuleObjArray = null;
+
+        SymbolNameObj symObj = new SymbolNameObj(gSymbol);
+        String NormalizeSymbol = symObj.getSymbolFileName();
+        String url = ConstantKey.IIS_WEB_BASE_URL+ "/cust/" + gUserName + "/acc/"+gAccountId+ "/st/"+NormalizeSymbol+"/tr";
+
+        String resultString =  StartHTTPrequest(url);
+
+        if (resultString != null) {
+            if (resultString.length() > 0) {
+                try {
+
+                    TradingRuleObj[] arrayItem = new ObjectMapper().readValue(resultString, TradingRuleObj[].class);
+                    List<TradingRuleObj> listItem = Arrays.<TradingRuleObj>asList(arrayItem);
+                    TradingRuleObjArray = new ArrayList<TradingRuleObj>(listItem);
+
+                    return TradingRuleObjArray;
+                } catch (JsonParseException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public AFstockObj geAFstockObj(String gSymbol)throws Exception {
+        AFstockObj stockObj = null;
+
+        SymbolNameObj symObj = new SymbolNameObj(gSymbol);
+        String NormalizeSymbol = symObj.getSymbolFileName();
+        String url = ConstantKey.IIS_WEB_BASE_URL+ "/st/"+NormalizeSymbol;
+
+        String resultString =  StartHTTPrequest(url);
+
+        if (resultString != null) {
+            if (resultString.length() > 0) {
+                try {
+
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    stockObj = objectMapper.readValue(resultString, AFstockObj.class);
+                    return stockObj;
+                } catch (JsonParseException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    //////////////////////////
     protected String StartHTTPrequest(String url) throws Exception {
         Log.i(TAG, "StartHTTPrequest " +url);
         BufferedReader in = null;
@@ -265,6 +336,7 @@ class BackendCommunicatorStub implements BackendCommunicator {
 
         return resultString;
     }
+
 
     protected String StartHTTPpost(String url) {
         Log.i(TAG, "StartHTTPpost " +url);
@@ -313,5 +385,4 @@ class BackendCommunicatorStub implements BackendCommunicator {
         }
         return resultString;
     }
-
 }

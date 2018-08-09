@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.afweb.model.account.AccountObj;
 import com.afweb.model.account.CustomerObj;
+import com.afweb.model.account.TradingRuleObj;
 import com.afweb.model.stock.AFstockObj;
 import com.example.dkalita.signin.communicator.BackendCommunicator;
 import com.example.dkalita.signin.communicator.communicatorFactory;
@@ -26,6 +27,10 @@ public class SignInModel {
 	private AccountObj accountObj;
 
 	private int ResultAddRemoveStock;
+
+
+    private ArrayList <TradingRuleObj> tradingRuleObjList;
+	private AFstockObj mAFstockObj;
 
 	public SignInModel() {
 		Log.i(TAG, "new Instance");
@@ -83,6 +88,19 @@ public class SignInModel {
 		getmSignInTask().execute();
 	}
 
+
+	public void signInTrandingRule(final String userName, final String accountId, final String symbol) {
+		if (mIsWorking) {
+			return;
+		}
+
+		mObservable.notifyStarted();
+		mIsWorking = true;
+		setmSignInTask(new SignInTask());
+		getmSignInTask().setTrandingRuleTask(userName, accountId, symbol);
+		getmSignInTask().execute();
+	}
+	/////////////////////////////////////
 	public void stopSignIn() {
 		if (mIsWorking) {
 			getmSignInTask().cancel(true);
@@ -122,9 +140,9 @@ public class SignInModel {
 
 	public static final int IISWEB_GET_CUSTOMER_SIGNIN = 0;
 	public static final int IISWEB_GET_ACCOUNTSTOCKLIST = 2;
-	public static final int IISWEB_GET_ACCOUNTADDSTOCKLIST = 4;
-	public static final int IISWEB_GET_ACCOUNTREMOVESTOCKLIST = 5;
-
+	public static final int IISWEB_GET_ACCOUNTADDSTOCK = 4;
+	public static final int IISWEB_GET_ACCOUNTREMOVESTOCK = 5;
+	public static final int IISWEB_GET_TRANDINGRELELIST = 7;
 
 	public ArrayList<AFstockObj> getAccountStockList() {
 		return accountStockList;
@@ -148,6 +166,22 @@ public class SignInModel {
 
 	public void setResultAddRemoveStock(int resultAddRemoveStock) {
 		ResultAddRemoveStock = resultAddRemoveStock;
+	}
+
+	public ArrayList<TradingRuleObj> getTradingRuleObjList() {
+		return tradingRuleObjList;
+	}
+
+	public void setTradingRuleObjList(ArrayList<TradingRuleObj> tradingRuleObjList) {
+		this.tradingRuleObjList = tradingRuleObjList;
+	}
+
+	public AFstockObj getmAFstockObj() {
+		return mAFstockObj;
+	}
+
+	public void setmAFstockObj(AFstockObj mAFstockObj) {
+		this.mAFstockObj = mAFstockObj;
 	}
 
 	public class SignInTask extends AsyncTask<Void, Void, Integer> {
@@ -183,7 +217,7 @@ public class SignInModel {
 			mAccountId = accountId;
 			setmSymbol(symbol);
 			setResultAddRemoveStock(0);
-			setmIISWebfunction(IISWEB_GET_ACCOUNTADDSTOCKLIST);
+			setmIISWebfunction(IISWEB_GET_ACCOUNTADDSTOCK);
 		}
 
 		public void setAccountRemoveStockTask(final String userName, final String accountId, final String symbol) {
@@ -191,9 +225,18 @@ public class SignInModel {
 			mAccountId = accountId;
 			setmSymbol(symbol);
 			setResultAddRemoveStock(0);
-			setmIISWebfunction(IISWEB_GET_ACCOUNTREMOVESTOCKLIST);
+			setmIISWebfunction(IISWEB_GET_ACCOUNTREMOVESTOCK);
 		}
 
+
+		public void setTrandingRuleTask(final String userName, final String accountId, final String symbol) {
+			mUserName = userName;
+			mAccountId = accountId;
+			setmSymbol(symbol);
+            setTradingRuleObjList(null);
+			setmIISWebfunction(IISWEB_GET_TRANDINGRELELIST);
+		}
+		///////////////////////
 		@Override
 		protected Integer doInBackground(final Void... params) {
 
@@ -201,61 +244,73 @@ public class SignInModel {
 
 			try {
 
-				if (getmIISWebfunction() == IISWEB_GET_CUSTOMER_SIGNIN) {
-					CustomerObj custObj = communicator.getCustomerObj(mUserName, mPassword);
-					if (custObj == null) {
-						return 0;
-					}
-					setCustomerObj(custObj);
-					Log.i(TAG, "Username: " + custObj.getUserName());
+				switch (mIISWebfunction) {
+					case IISWEB_GET_CUSTOMER_SIGNIN:
+						CustomerObj custObj = communicator.getCustomerObj(mUserName, mPassword);
+						if (custObj == null) {
+							return 0;
+						}
+						setCustomerObj(custObj);
+						Log.i(TAG, "Username: " + custObj.getUserName());
 
-					ArrayList accList = communicator.getAccountList(custObj.getUserName(), mPassword);
-					if (accList == null) {
-						return 0;
-					}
-					setAccountObjList(accList);
-					return 1;
-
-				} else if (getmIISWebfunction() == IISWEB_GET_ACCOUNTSTOCKLIST) {
-
-					ArrayList accountStockList = communicator.getAccountStockList(mUserName, mAccountId);
-					if (accountStockList == null) {
-						return 0;
-					}
-					Log.i(TAG, "StockSize: " + accountStockList.size());
-					setAccountStockList(accountStockList);
-					return 1;
-
-				} else if (getmIISWebfunction() == IISWEB_GET_ACCOUNTADDSTOCKLIST) {
-
-					setResultAddRemoveStock(communicator.getAccountAddStockList(mUserName, mAccountId, getmSymbol()));
-					ArrayList accountStockList = communicator.getAccountStockList(mUserName, mAccountId);
-					if (accountStockList == null) {
-						return 0;
-					}
-					Log.i(TAG, "StockSize: " + accountStockList.size());
-					setAccountStockList(accountStockList);
-
-					if (getResultAddRemoveStock() == 1) {
+						ArrayList accList = communicator.getAccountList(custObj.getUserName(), mPassword);
+						if (accList == null) {
+							return 0;
+						}
+						setAccountObjList(accList);
 						return 1;
-					}
-					return 0;
 
-				} else if (getmIISWebfunction() == IISWEB_GET_ACCOUNTREMOVESTOCKLIST) {
-
-					setResultAddRemoveStock(communicator.getAccountRemoveStockList(mUserName, mAccountId, getmSymbol()));
-					ArrayList accountStockList = communicator.getAccountStockList(mUserName, mAccountId);
-					if (accountStockList == null) {
-						return 0;
-					}
-					Log.i(TAG, "StockSize: " + accountStockList.size());
-					setAccountStockList(accountStockList);
-					if (getResultAddRemoveStock() == 1) {
+					case IISWEB_GET_ACCOUNTSTOCKLIST:
+						ArrayList accountStockList = communicator.getAccountStockList(mUserName, mAccountId);
+						if (accountStockList == null) {
+							return 0;
+						}
+						Log.i(TAG, "StockSize: " + accountStockList.size());
+						setAccountStockList(accountStockList);
 						return 1;
-					}
-					return 0;
 
+					case IISWEB_GET_ACCOUNTADDSTOCK:
+						setResultAddRemoveStock(communicator.getAccountAddStockList(mUserName, mAccountId, getmSymbol()));
+						ArrayList accountStockList1 = communicator.getAccountStockList(mUserName, mAccountId);
+						if (accountStockList1 == null) {
+							return 0;
+						}
+						Log.i(TAG, "StockSize: " + accountStockList1.size());
+						setAccountStockList(accountStockList1);
+
+						if (getResultAddRemoveStock() == 1) {
+							return 1;
+						}
+						return 0;
+
+					case IISWEB_GET_ACCOUNTREMOVESTOCK:
+						setResultAddRemoveStock(communicator.getAccountRemoveStockList(mUserName, mAccountId, getmSymbol()));
+						ArrayList accountStockList2 = communicator.getAccountStockList(mUserName, mAccountId);
+						if (accountStockList2 == null) {
+							return 0;
+						}
+						Log.i(TAG, "StockSize: " + accountStockList2.size());
+						setAccountStockList(accountStockList2);
+						if (getResultAddRemoveStock() == 1) {
+							return 1;
+						}
+						return 0;
+
+					case IISWEB_GET_TRANDINGRELELIST:
+						setTradingRuleObjList(communicator.getTradingRuleList(mUserName, mAccountId, getmSymbol()));
+                        if (getTradingRuleObjList() == null) {
+                            return 0;
+                        }
+						setmAFstockObj(communicator.geAFstockObj(getmSymbol()));
+                        if (getmAFstockObj() == null) {
+                        	return 0;
+						}
+						return 1;
+
+					default:
+						break;
 				}
+
 			} catch (Exception e) {
 				Log.i(TAG, "Sign in interrupted");
 

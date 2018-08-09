@@ -36,6 +36,12 @@
 		<activity
 			android:name=".iisweb.AccountStockActivity"
 			android:label="@string/app_name" />
+		<activity
+			android:name=".iisweb.TrandingRuleActivityHandler"
+			android:label="@string/app_name" />
+        <activity
+            android:name=".iisweb.TrandingRuleActivity"
+            android:label="@string/app_name" />
 
 	</application>
 
