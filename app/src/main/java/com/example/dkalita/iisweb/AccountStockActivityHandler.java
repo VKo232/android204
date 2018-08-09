@@ -194,7 +194,7 @@ public class AccountStockActivityHandler extends AppCompatActivity implements Si
                 switch (mIISWebfunction) {
                     case SignInModel.IISWEB_GET_ACCOUNTADDSTOCKLIST:
                         if (ResultAddRemoveStock == AccountObj.MAX_ALLOW_STOCK_ERROR) {
-                            myIntent.putExtra("Toastmsg", "Stock Added exceed 20 Failed"); //Optional parameters
+                            myIntent.putExtra("Toastmsg", "Stock Added Failed - Exceeding 20 stock"); //Optional parameters
                         } else {
                             myIntent.putExtra("Toastmsg", "Stock Added Failed"); //Optional parameters
                         }
