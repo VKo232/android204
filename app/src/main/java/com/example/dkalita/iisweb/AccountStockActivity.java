@@ -190,8 +190,8 @@ public class AccountStockActivity extends AppCompatActivity  implements OnDialog
             public void onClick(View v) {
                 // Add new Items to List
 
-                Toast.makeText(getApplicationContext(),
-                        ((TextView) v).getText(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(),
+//                        ((TextView) v).getText(), Toast.LENGTH_SHORT).show();
                 /*
                     notifyDataSetChanged ()
                         Notifies the attached observers that the underlying
@@ -199,11 +199,12 @@ public class AccountStockActivity extends AppCompatActivity  implements OnDialog
                         data set should refresh itself.
                  */
                 arrayAdapter.notifyDataSetChanged();
-                Intent myIntent = new Intent(getApplicationContext(), TrandingRuleActivityHandler.class);
+                Intent myIntent = new Intent(getApplicationContext(), AccountStockActivityHandler.class);
 
                 myIntent.putExtra("customerObjSt", customerObjSt); //Optional parameters
                 myIntent.putExtra("accountObjSt", accountObjSt); //Optional parameters
-
+                myIntent.putExtra(PromptDialogFragment.ADD_SYM_CMD, "");
+                myIntent.putExtra(PromptDialogFragment.DEL_SYM_CMD, "");
                 startActivity(myIntent);
             }
         });
