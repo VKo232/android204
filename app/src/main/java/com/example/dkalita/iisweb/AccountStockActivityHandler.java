@@ -18,14 +18,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class AccountStockActivityHandler extends AppCompatActivity implements SignInModel.Observer {
     private static final String TAG = "AccountStockAH";
     private static final String TAG_WORKER = "TAG_WORKER_ACC_ST";
     private  CustomerObj customerObj;
     private  String customerObjSt;
+
+    private  ArrayList <AccountObj> accountObjList;
+    private  String accountObjListSt;
+
     private  AccountObj accountObj;
-    private  String accountObjSt;
 
     private String addSymbolCmd;
     private String delSymbolCmd;
@@ -44,8 +49,21 @@ public class AccountStockActivityHandler extends AppCompatActivity implements Si
             setCustomerObjSt(getIntent().getStringExtra("customerObjSt"));
             setCustomerObj(objectMapper.readValue(getCustomerObjSt(), CustomerObj.class));
 
-            setAccountObjSt(getIntent().getStringExtra("accountObjSt"));
-            setAccountObj(objectMapper.readValue(getAccountObjSt(), AccountObj.class));
+            accountObjListSt = (getIntent().getStringExtra("accountObjListSt"));
+            AccountObj[] arrayItem = new ObjectMapper().readValue(accountObjListSt, AccountObj[].class);
+            List<AccountObj> listItem = Arrays.<AccountObj>asList(arrayItem);
+            accountObjList = (new ArrayList<AccountObj>(listItem));
+
+            int accountObjId = getIntent().getIntExtra("accountObjId",0);
+
+            for (int i=0; i<accountObjList.size(); i++) {
+                AccountObj accountObjTemp = accountObjList.get(i);
+                if (accountObjTemp.getID() == accountObjId) {
+                    accountObj= accountObjTemp;
+                    break;
+                }
+            }
+
 
             addSymbolCmd =getIntent().getStringExtra(PromptDialogFragment.ADD_SYM_CMD);
             delSymbolCmd =getIntent().getStringExtra(PromptDialogFragment.DEL_SYM_CMD);
@@ -147,7 +165,9 @@ public class AccountStockActivityHandler extends AppCompatActivity implements Si
                 Intent myIntent = new Intent(getApplicationContext(), AccountStockActivity.class);
 
                 myIntent.putExtra("customerObjSt", customerObjSt); //Optional parameters
-                myIntent.putExtra("accountObjSt", accountObjSt); //Optional parameters
+                myIntent.putExtra("accountObjListSt", accountObjListSt); //Optional parameters
+                myIntent.putExtra("accountObjId", accountObj.getID());
+
                 String accountStockListSt = new ObjectMapper().writeValueAsString(accountStockList);
                 myIntent.putExtra("accountStockListSt", accountStockListSt); //Optional parameters
 
@@ -183,7 +203,8 @@ public class AccountStockActivityHandler extends AppCompatActivity implements Si
                 Intent myIntent = new Intent(getApplicationContext(), AccountStockActivity.class);
 
                 myIntent.putExtra("customerObjSt", customerObjSt); //Optional parameters
-                myIntent.putExtra("accountObjSt", accountObjSt); //Optional parameters
+                myIntent.putExtra("accountObjListSt", accountObjListSt); //Optional parameters
+                myIntent.putExtra("accountObjId", accountObj.getID());
                 String accountStockListSt = new ObjectMapper().writeValueAsString(accountStockList);
                 myIntent.putExtra("accountStockListSt", accountStockListSt); //Optional parameters
 
@@ -241,13 +262,5 @@ public class AccountStockActivityHandler extends AppCompatActivity implements Si
 
     public void setAccountObj(AccountObj accountObj) {
         this.accountObj = accountObj;
-    }
-
-    public String getAccountObjSt() {
-        return accountObjSt;
-    }
-
-    public void setAccountObjSt(String accountObjSt) {
-        this.accountObjSt = accountObjSt;
     }
 }

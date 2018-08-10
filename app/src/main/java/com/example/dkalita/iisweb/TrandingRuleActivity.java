@@ -31,8 +31,11 @@ public class TrandingRuleActivity extends AppCompatActivity {
     private static final String TAG = "TrandingRuleA";
     private CustomerObj customerObj;
     private  String customerObjSt;
-    private AccountObj accountObj;
-    private  String accountObjSt;
+
+    private  ArrayList <AccountObj> accountObjList;
+    private  String accountObjListSt;
+    private  AccountObj accountObj;
+
     private ArrayList <TradingRuleObj> tradingRuleObjList;
     private String tradingRuleObjListSt;
     private AFstockObj mAFstockObj;
@@ -51,13 +54,25 @@ public class TrandingRuleActivity extends AppCompatActivity {
             setCustomerObjSt(getIntent().getStringExtra("customerObjSt"));
             setCustomerObj(objectMapper.readValue(getCustomerObjSt(), CustomerObj.class));
 
-            setAccountObjSt(getIntent().getStringExtra("accountObjSt"));
-            setAccountObj(objectMapper.readValue(getAccountObjSt(), AccountObj.class));
+            accountObjListSt = (getIntent().getStringExtra("accountObjListSt"));
+            AccountObj[] arrayItem = new ObjectMapper().readValue(accountObjListSt, AccountObj[].class);
+            List<AccountObj> listItem = Arrays.<AccountObj>asList(arrayItem);
+            accountObjList = (new ArrayList<AccountObj>(listItem));
+
+            int accountObjId = getIntent().getIntExtra("accountObjId",0);
+
+            for (int i=0; i<accountObjList.size(); i++) {
+                AccountObj accountObjTemp = accountObjList.get(i);
+                if (accountObjTemp.getID() == accountObjId) {
+                    accountObj= accountObjTemp;
+                    break;
+                }
+            }
 
             tradingRuleObjListSt = getIntent().getStringExtra("tradingRuleObjListSt");
-            TradingRuleObj[] arrayItem = new ObjectMapper().readValue(tradingRuleObjListSt, TradingRuleObj[].class);
-            List<TradingRuleObj> listItem = Arrays.<TradingRuleObj>asList(arrayItem);
-            tradingRuleObjList = new ArrayList<TradingRuleObj>(listItem);
+            TradingRuleObj[] arrayItem1 = new ObjectMapper().readValue(tradingRuleObjListSt, TradingRuleObj[].class);
+            List<TradingRuleObj> listItem1 = Arrays.<TradingRuleObj>asList(arrayItem1);
+            tradingRuleObjList = new ArrayList<TradingRuleObj>(listItem1);
 
             mAFstockObjSt = getIntent().getStringExtra("mAFstockObjSt");
             mAFstockObj =objectMapper.readValue(mAFstockObjSt, AFstockObj.class);
@@ -147,14 +162,6 @@ public class TrandingRuleActivity extends AppCompatActivity {
 
     public void setAccountObj(AccountObj accountObj) {
         this.accountObj = accountObj;
-    }
-
-    public String getAccountObjSt() {
-        return accountObjSt;
-    }
-
-    public void setAccountObjSt(String accountObjSt) {
-        this.accountObjSt = accountObjSt;
     }
 
 

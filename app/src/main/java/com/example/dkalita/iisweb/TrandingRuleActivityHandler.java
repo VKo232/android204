@@ -17,14 +17,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class TrandingRuleActivityHandler extends AppCompatActivity implements SignInModel.Observer {
     private static final String TAG = "TrandingRuleAH";
     private static final String TAG_WORKER = "TAG_WORKER_TR_ST";
     private CustomerObj customerObj;
     private  String customerObjSt;
-    private AccountObj accountObj;
-    private  String accountObjSt;
+
+    private  ArrayList <AccountObj> accountObjList;
+    private  String accountObjListSt;
+    private  AccountObj accountObj;
 
     private AFstockObj stockObj;
     private  String stockObjSt;
@@ -43,8 +47,20 @@ public class TrandingRuleActivityHandler extends AppCompatActivity implements Si
             setCustomerObjSt(getIntent().getStringExtra("customerObjSt"));
             setCustomerObj(objectMapper.readValue(getCustomerObjSt(), CustomerObj.class));
 
-            setAccountObjSt(getIntent().getStringExtra("accountObjSt"));
-            setAccountObj(objectMapper.readValue(getAccountObjSt(), AccountObj.class));
+            accountObjListSt = (getIntent().getStringExtra("accountObjListSt"));
+            AccountObj[] arrayItem = new ObjectMapper().readValue(accountObjListSt, AccountObj[].class);
+            List<AccountObj> listItem = Arrays.<AccountObj>asList(arrayItem);
+            accountObjList = (new ArrayList<AccountObj>(listItem));
+
+            int accountObjId = getIntent().getIntExtra("accountObjId",0);
+
+            for (int i=0; i<accountObjList.size(); i++) {
+                AccountObj accountObjTemp = accountObjList.get(i);
+                if (accountObjTemp.getID() == accountObjId) {
+                    accountObj= accountObjTemp;
+                    break;
+                }
+            }
 
             stockObjSt = getIntent().getStringExtra("stockObjSt");
             stockObj = objectMapper.readValue(stockObjSt, AFstockObj.class);
@@ -132,8 +148,8 @@ public class TrandingRuleActivityHandler extends AppCompatActivity implements Si
                 Intent myIntent = new Intent(getApplicationContext(), TrandingRuleActivity.class);
 
                 myIntent.putExtra("customerObjSt", customerObjSt); //Optional parameters
-                myIntent.putExtra("accountObjSt", accountObjSt); //Optional parameters
-
+                myIntent.putExtra("accountObjListSt", accountObjListSt); //Optional parameters
+                myIntent.putExtra("accountObjId", accountObj.getID());
 
                 String tradingRuleObjListSt = new ObjectMapper().writeValueAsString(tradingRuleObjList);
                 myIntent.putExtra("tradingRuleObjListSt", tradingRuleObjListSt); //Optional parameters
@@ -184,13 +200,5 @@ public class TrandingRuleActivityHandler extends AppCompatActivity implements Si
 
     public void setAccountObj(AccountObj accountObj) {
         this.accountObj = accountObj;
-    }
-
-    public String getAccountObjSt() {
-        return accountObjSt;
-    }
-
-    public void setAccountObjSt(String accountObjSt) {
-        this.accountObjSt = accountObjSt;
     }
 }

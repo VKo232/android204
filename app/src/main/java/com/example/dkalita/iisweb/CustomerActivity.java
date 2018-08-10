@@ -38,8 +38,6 @@ public class CustomerActivity extends AppCompatActivity {
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            setCustomerObjSt(getIntent().getStringExtra("customerObjSt"));
-            setCustomerObj(objectMapper.readValue(getCustomerObjSt(), CustomerObj.class));
 
             setCustomerObjSt(getIntent().getStringExtra("customerObjSt"));
             setCustomerObj(objectMapper.readValue(getCustomerObjSt(), CustomerObj.class));
@@ -117,9 +115,9 @@ public class CustomerActivity extends AppCompatActivity {
                         Intent myIntent = new Intent(getApplicationContext(), AccountStockActivityHandler.class);
 
                         myIntent.putExtra("customerObjSt", customerObjSt); //Optional parameters
+                        myIntent.putExtra("accountObjListSt", accountObjListSt); //Optional parameters
+                        myIntent.putExtra("accountObjId", accObj.getID());
 
-                        String accountObjSt = new ObjectMapper().writeValueAsString(accObj);
-                        myIntent.putExtra("accountObjSt", accountObjSt); //Optional parameters
 
                         myIntent.putExtra(PromptDialogFragment.ADD_SYM_CMD, ""); //Optional parameters
                         myIntent.putExtra(PromptDialogFragment.DEL_SYM_CMD, "");
