@@ -75,12 +75,14 @@ public class MainActivity extends AppCompatActivity {
 //                        ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
 
                 if (position == 0) {
-                    Intent myIntent = new Intent(getApplicationContext(), SignInActivity.class);
-                    myIntent.putExtra("guestLogin", "");
+                    Intent myIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                    myIntent.putExtra("gLogin", "");
+                    myIntent.putExtra("gPass", "");
                     startActivity(myIntent);
                 } else if (position == 4) {
-                    Intent myIntent = new Intent(getApplicationContext(), SignInActivity.class);
-                    myIntent.putExtra("guestLogin", "guest");
+                    Intent myIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                    myIntent.putExtra("gLogin", "guest");
+                    myIntent.putExtra("gPass", "guest");
                     startActivity(myIntent);
                 }
             }

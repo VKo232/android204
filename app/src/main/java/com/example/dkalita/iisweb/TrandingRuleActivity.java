@@ -4,8 +4,10 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -47,6 +49,12 @@ public class TrandingRuleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tradingrule);
+
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         ArrayList resultsObjects = new ArrayList();
         try {
@@ -139,6 +147,29 @@ public class TrandingRuleActivity extends AppCompatActivity {
         lv.setAdapter(arrayAdapter);
 
      }
+
+
+    public boolean onOptionsItemSelected(MenuItem item){
+//        switch (item.getItemId()) {
+//            case android.R.id.home:
+//                finish();
+//                return true;
+//        }
+        Intent myIntent = new Intent(getApplicationContext(), AccountStockActivityHandler.class);
+
+        myIntent.putExtra("customerObjSt", customerObjSt); //Optional parameters
+        myIntent.putExtra("accountObjListSt", accountObjListSt); //Optional parameters
+        myIntent.putExtra("accountObjId", accountObj.getID());
+        myIntent.putExtra(PromptDialogFragment.ADD_SYM_CMD, "");
+        myIntent.putExtra(PromptDialogFragment.DEL_SYM_CMD, "");
+
+        startActivity(myIntent);
+
+        finish();
+        return true;
+//        return super.onOptionsItemSelected(item);
+    }
+
 
     public CustomerObj getCustomerObj() {
         return customerObj;

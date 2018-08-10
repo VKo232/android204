@@ -26,8 +26,8 @@ public class SignInActivity extends Activity implements SignInModel.Observer {
 	private View mSubmit;
 	private View mProgress;
 
-	private String guestLogin;
-
+	private String gLogin;
+	private String gPass;
 	private SignInModel mSignInModel;
 
 
@@ -37,7 +37,8 @@ public class SignInActivity extends Activity implements SignInModel.Observer {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sign_in);
 
-		guestLogin = getIntent().getStringExtra("guestLogin");
+		gLogin = getIntent().getStringExtra("gLogin");
+		gPass = getIntent().getStringExtra("gPass");
 
 		mUserName = (EditText) findViewById(R.id.view_username);
 		mPassword = (EditText) findViewById(R.id.view_password);
@@ -71,9 +72,9 @@ public class SignInActivity extends Activity implements SignInModel.Observer {
 
 		mSignInModel.registerObserver(this);
 
-		if (guestLogin != null) {
-			if (guestLogin.length() > 0) {
-				mSignInModel.signIn(guestLogin, guestLogin);
+		if (gLogin != null) {
+			if (gLogin.length() > 0) {
+				mSignInModel.signIn(gLogin, gPass);
 			}
 		}
 	}

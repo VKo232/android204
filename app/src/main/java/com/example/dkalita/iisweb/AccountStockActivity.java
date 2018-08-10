@@ -231,7 +231,8 @@ public class AccountStockActivity extends AppCompatActivity  implements OnDialog
 
                 myIntent.putExtra("customerObjSt", customerObjSt); //Optional parameters
                 myIntent.putExtra("accountObjListSt", accountObjListSt); //Optional parameters
-                myIntent.putExtra("accountObjId", accountObj.getID());                myIntent.putExtra(PromptDialogFragment.ADD_SYM_CMD, "");
+                myIntent.putExtra("accountObjId", accountObj.getID());
+                myIntent.putExtra(PromptDialogFragment.ADD_SYM_CMD, "");
                 myIntent.putExtra(PromptDialogFragment.DEL_SYM_CMD, "");
                 startActivity(myIntent);
             }
