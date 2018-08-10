@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -82,10 +83,11 @@ public class AccountStockActivity extends AppCompatActivity  implements OnDialog
         }
 
 
-        final ListView lv = (ListView) findViewById(R.id.liststockv1);
-        final Button addbtn = (Button) findViewById(R.id.addline);
-        final Button delbtn = (Button) findViewById(R.id.deleteline);
-        final Button refreshbn1 = (Button) findViewById(R.id.refreshbn1);
+        final ListView lv =  findViewById(R.id.liststockv1);
+        final ImageButton backbtn =  findViewById(R.id.imageback1);
+        final Button addbtn =  findViewById(R.id.addline);
+        final Button delbtn =  findViewById(R.id.deleteline);
+        final Button refreshbn1 = findViewById(R.id.refreshbn1);
 
         String  stockList[] = (String[]) resultsObjects.toArray(new String[resultsObjects.size()]);
 
@@ -146,6 +148,24 @@ public class AccountStockActivity extends AppCompatActivity  implements OnDialog
         });
         // DataBind ListView with items from ArrayAdapter
         lv.setAdapter(arrayAdapter);
+
+        backbtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // Add new Items to List
+
+                Toast.makeText(getApplicationContext(),
+                        ((TextView) v).getText(), Toast.LENGTH_SHORT).show();
+                /*
+                    notifyDataSetChanged ()
+                        Notifies the attached observers that the underlying
+                        data has been changed and any View reflecting the
+                        data set should refresh itself.
+                 */
+                arrayAdapter.notifyDataSetChanged();
+            }
+        });
 
         addbtn.setOnClickListener(new View.OnClickListener() {
             @Override
